@@ -27,6 +27,7 @@ help:
 	@echo -e "$(WARN_COLOR)- make con			: Connect to adcm container"
 	@echo -e "$(WARN_COLOR)- make conpos			: Connect to postgres container"
 	@echo -e "$(WARN_COLOR)- make down			: Stopping configuration"
+	@echo -e "$(WARN_COLOR)- make down			: Change script format"
 	@echo -e "$(WARN_COLOR)- make env			: Create .env-file"
 	@echo -e "$(WARN_COLOR)- make push			: Push changes to the github"
 	@echo -e "$(WARN_COLOR)- make re			: Rebuild configuration"
