@@ -84,7 +84,6 @@ ps:
 
 clean: down
 	@printf "$(ERROR_COLOR)==== Cleaning configuration ${name}... ====$(NO_COLOR)\n"
-	
 
 fclean:
 	@printf "$(ERROR_COLOR)==== Total clean of all configurations docker ====$(NO_COLOR)\n"
@@ -96,4 +95,3 @@ fclean:
 	# @docker volume prune --force
 
 .PHONY	: all help build down dump logs re refl repa reps ps clean fclean
-
