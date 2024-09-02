@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  adcm:
+    image: hub.arenadata.io/adcm/adcm:2.2
+    container_name: adcm
+    restart: unless-stopped
+    ports:
+      - "$ADCM_PORT:8000"
+    volumes:
+      - /opt/adcm:/adcm/data
+    environment:
+      - DB_HOST=$POSTGRES_HOST
+      - DB_PORT=$POSTGRES_PORT
+      - DB_USER=$POSTGRES_USER
+      - DB_PASS=$POSTGRES_PASS
+      - DB_NAME=$POSTGRES_BD
+      - DB_OPTIONS=$POSTGRES_OPTIONS
+    networks:
+      network:
+        ipv4_address: $ADCM_HOST
+
+  postgres:
+    container_name: $PSGR_NAME
+    image: 'postgres:alpine3.20'
+    environment:
+      POSTGRES_PASSWORD: $POSTGRES_PASS
+      # If your wanna nopass authentication,
+      # you can use the following option:
+      # POSTGRES_HOST_AUTH_METHOD: "trust"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./dump:/docker-entrypoint-initdb.d/init-db.sh
+    ports:
+      - "$POSTGRES_PORT:5432"
+    networks:
+      network:
+        ipv4_address: $PSGR_HOST
+
+networks:
+  network:
+    driver: bridge
+    name: $NETW_NAME
+    ipam:
+      config:
+        - subnet: $NETW_ADDR
+          gateway: $NETW_GATE
