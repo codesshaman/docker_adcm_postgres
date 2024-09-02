@@ -3,7 +3,7 @@ version: '3.8'
 services:
   adcm:
     image: hub.arenadata.io/adcm/adcm:2.2
-    container_name: adcm
+    container_name: $ADCM_NAME
     restart: unless-stopped
     ports:
       - "$ADCM_PORT:8000"
@@ -16,12 +16,18 @@ services:
       - DB_PASS=$POSTGRES_PASS
       - DB_NAME=$POSTGRES_BD
       - DB_OPTIONS=$POSTGRES_OPTIONS
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:${ADCM_PORT} || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     networks:
       network:
         ipv4_address: $ADCM_HOST
 
   postgres:
-    container_name: $PSGR_NAME
+    container_name: $POSTGRES_NAME
     image: 'postgres:alpine3.20'
     environment:
       POSTGRES_PASSWORD: $POSTGRES_PASS

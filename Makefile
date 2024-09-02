@@ -18,7 +18,6 @@ USER_ID = $(shell id -u)
 all:
 	@printf "Launch configuration ${name}...\n"
 	@docker-compose -f ./docker-compose.yml up -d
-	@docker-compose -f ./docker-compose.yml up -d --no-deps --build grafana
 
 help:
 	@echo -e "$(OK_COLOR)==== All commands of ${name} configuration ====$(NO_COLOR)"
@@ -38,7 +37,6 @@ help:
 build:
 	@printf "$(YELLOW)==== Building configuration ${name}... ====$(NO_COLOR)\n"
 	@docker-compose -f ./docker-compose.yml up -d --build
-	@docker-compose -f ./docker-compose.yml up -d --no-deps --build grafana
 
 con:
 	@printf "$(ERROR_COLOR)==== Connect to dash container... ====$(NO_COLOR)\n"
