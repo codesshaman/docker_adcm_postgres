@@ -1,8 +1,8 @@
-version: '3.8'
+version: '3.9'
 
 services:
   adcm:
-    image: hub.arenadata.io/adcm/adcm:2.2
+    image: hub.arenadata.io/adcm/adcm:2.1
     container_name: $ADCM_NAME
     restart: unless-stopped
     ports:
@@ -10,12 +10,13 @@ services:
     volumes:
       - /opt/adcm:/adcm/data:Z
     environment:
-      - DB_HOST=$POSTGRES_HOST
+      - DB_HOST=$PSGR_HOST
       - DB_PORT=$POSTGRES_PORT
       - DB_USER=$POSTGRES_USER
       - DB_PASS=$POSTGRES_PASS
       - DB_NAME=$POSTGRES_BD
-      - DB_OPTIONS=$POSTGRES_OPTIONS
+    depends_on:
+      - postgres
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:${ADCM_PORT} || exit 1"]
       interval: 30s

@@ -23,11 +23,11 @@ help:
 	@echo -e "$(OK_COLOR)==== All commands of ${name} configuration ====$(NO_COLOR)"
 	@echo -e "$(WARN_COLOR)- make				: Launch configuration"
 	@echo -e "$(WARN_COLOR)- make build			: Building configuration"
-	@echo -e "$(WARN_COLOR)- make con			: Connect to adcm container"
+	@echo -e "$(WARN_COLOR)- make conn			: Connect to adcm container"
 	@echo -e "$(WARN_COLOR)- make conpos			: Connect to postgres container"
 	@echo -e "$(WARN_COLOR)- make down			: Stopping configuration"
 	@echo -e "$(WARN_COLOR)- make down			: Change script format"
-	@echo -e "$(WARN_COLOR)- make env			: Create .env-file"
+	@echo -e "$(WARN_COLOR)- make env			: Create .env file"
 	@echo -e "$(WARN_COLOR)- make push			: Push changes to the github"
 	@echo -e "$(WARN_COLOR)- make re			: Rebuild configuration"
 	@echo -e "$(WARN_COLOR)- make repos			: Rebuild postgres configuration"
@@ -38,7 +38,7 @@ build:
 	@printf "$(YELLOW)==== Building configuration ${name}... ====$(NO_COLOR)\n"
 	@docker-compose -f ./docker-compose.yml up -d --build
 
-con:
+conn:
 	@printf "$(ERROR_COLOR)==== Connect to dash container... ====$(NO_COLOR)\n"
 	@docker exec -it adcm bash
 
@@ -63,15 +63,19 @@ env:
 	echo "USER_ID=${USER_ID}" >> .env
 
 logpos:
-	@printf "$(YELLOW)==== ${name} logs... ====$(NO_COLOR)\n"
+	@printf "$(YELLOW)==== postgres logs... ====$(NO_COLOR)\n"
 	@docker logs postgres
 
 logs:
 	@printf "$(YELLOW)==== ${name} logs... ====$(NO_COLOR)\n"
 	@docker logs adcm
 
+migrate:
+	@printf "$(YELLOW)==== Make ${name} migrations ====$(NO_COLOR)\n"
+	@bash scripts/migrate.sh
+
 push:
-	@bash push.sh
+	@bash scripts/push.sh
 
 re:
 	@printf "Rebuild the configuration ${name}...\n"
