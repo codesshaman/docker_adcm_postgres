@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   adcm:
-    image: hub.arenadata.io/adcm/adcm:2.1
+    image: hub.arenadata.io/adcm/adcm:2.3.0
     container_name: $ADCM_NAME
     restart: unless-stopped
     ports:
