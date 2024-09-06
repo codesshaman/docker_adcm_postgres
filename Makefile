@@ -28,10 +28,12 @@ help:
 	@echo -e "$(WARN_COLOR)- make down			: Stopping configuration"
 	@echo -e "$(WARN_COLOR)- make down			: Change script format"
 	@echo -e "$(WARN_COLOR)- make env			: Create .env file"
+	@echo -e "$(WARN_COLOR)- make migrate			: Create migrations"
+	@echo -e "$(WARN_COLOR)- make ps			: View configuration"
 	@echo -e "$(WARN_COLOR)- make push			: Push changes to the github"
 	@echo -e "$(WARN_COLOR)- make re			: Rebuild configuration"
-	@echo -e "$(WARN_COLOR)- make repos			: Rebuild postgres configuration"
-	@echo -e "$(WARN_COLOR)- make ps			: View configuration"
+	@echo -e "$(WARN_COLOR)- make read			: Restart adcm only"
+	@echo -e "$(WARN_COLOR)- make repos			: Restart postgres only"
 	@echo -e "$(WARN_COLOR)- make clean			: Cleaning configuration$(NO_COLOR)"
 
 build:
@@ -59,8 +61,7 @@ env:
 	@if [ -f .env ]; then \
 		rm .env; \
 	fi; \
-	cp .env.example .env; \
-	echo "USER_ID=${USER_ID}" >> .env
+	cp .env.example .env
 
 logpos:
 	@printf "$(YELLOW)==== postgres logs... ====$(NO_COLOR)\n"
@@ -81,6 +82,11 @@ re:
 	@printf "Rebuild the configuration ${name}...\n"
 	@docker-compose -f ./docker-compose.yml down
 	@docker-compose -f ./docker-compose.yml up -d --build
+
+read:
+	@printf "Rebuild the configuration ${name}...\n"
+	@docker-compose -f ./docker-compose.yml down adcm
+	@docker-compose -f ./docker-compose.yml up -d --no-deps --build adcm
 
 ps:
 	@printf "$(BLUE)==== View configuration ${name}... ====$(NO_COLOR)\n"
