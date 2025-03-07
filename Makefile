@@ -25,6 +25,7 @@ help:
 	@echo -e "$(WARN_COLOR)- make build			: Building configuration"
 	@echo -e "$(WARN_COLOR)- make conn			: Connect to adcm container"
 	@echo -e "$(WARN_COLOR)- make conpos			: Connect to postgres container"
+	@echo -e "$(WARN_COLOR)- make git                      : Set user and mail for git"
 	@echo -e "$(WARN_COLOR)- make down			: Stopping configuration"
 	@echo -e "$(WARN_COLOR)- make down			: Change script format"
 	@echo -e "$(WARN_COLOR)- make env			: Create .env file"
@@ -33,11 +34,12 @@ help:
 	@echo -e "$(WARN_COLOR)- make push			: Push changes to the github"
 	@echo -e "$(WARN_COLOR)- make re			: Rebuild configuration"
 	@echo -e "$(WARN_COLOR)- make read			: Restart adcm only"
-	@echo -e "$(WARN_COLOR)- make repos			: Restart postgres only"
+	@echo -e "$(WARN_COLOR)- make repg			: Restart postgres only"
 	@echo -e "$(WARN_COLOR)- make clean			: Cleaning configuration$(NO_COLOR)"
 
 build:
 	@printf "$(YELLOW)==== Building configuration ${name}... ====$(NO_COLOR)\n"
+	@bash scripts/rm-gitkeep.sh
 	@docker-compose -f ./docker-compose.yml up -d --build
 
 conn:
@@ -47,6 +49,10 @@ conn:
 conpos:
 	@printf "$(ERROR_COLOR)==== Connect to postgres container... ====$(NO_COLOR)\n"
 	@docker exec -it postgres sh
+
+git:
+	@printf "$(YELLOW)==== Set user name and email to git for ${name} repo... ====$(NO_COLOR)\n"
+	@bash scripts/gituser.sh
 
 down:
 	@printf "$(ERROR_COLOR)==== Stopping configuration ${name}... ====$(NO_COLOR)\n"
@@ -62,6 +68,10 @@ env:
 		rm .env; \
 	fi; \
 	cp .env.example .env
+
+git:
+	@printf "$(YELLOW)==== Set user name and email to git for ${name} repo... ====$(NO_COLOR)\n"
+	@bash scripts/gituser.sh
 
 logpos:
 	@printf "$(YELLOW)==== postgres logs... ====$(NO_COLOR)\n"
@@ -84,9 +94,14 @@ re:
 	@docker-compose -f ./docker-compose.yml up -d --build
 
 read:
-	@printf "Rebuild the configuration ${name}...\n"
+	@printf "Rebuild adcm...\n"
 	@docker-compose -f ./docker-compose.yml down adcm
 	@docker-compose -f ./docker-compose.yml up -d --no-deps --build adcm
+
+repg:
+	@printf "$(OK_COLOR)==== Rebuild postgres... ====$(NO_COLOR)\n"
+	@docker-compose -f ./docker-compose.yml down postgres
+	@docker-compose -f ./docker-compose.yml up -d --no-deps --build postgres
 
 ps:
 	@printf "$(BLUE)==== View configuration ${name}... ====$(NO_COLOR)\n"
@@ -94,6 +109,7 @@ ps:
 
 clean: down
 	@printf "$(ERROR_COLOR)==== Cleaning configuration ${name}... ====$(NO_COLOR)\n"
+	@docker system prune --all --force
 
 fclean:
 	@printf "$(ERROR_COLOR)==== Total clean of all configurations docker ====$(NO_COLOR)\n"
